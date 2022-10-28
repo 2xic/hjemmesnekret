@@ -1,28 +1,14 @@
 ## Hjemmesnekret
 
-Testing framework for people using containers.
-
+Testing framework for those in need for speed.
 
 # Features missing
-- `describe` inside `describe`
-	- Global
-		- Local
-		- Local
-	- Describe handlers
-	- setup -> Add to list like a test.
-	- clear -> Restets it.
-	- Done
-
-- `expect` rejects
-	- I think this is just because of people using the api in a bad way.
-- `it.each`
-	- iterate over the array and format the test based on input variables.
-	- varaibles also ahve to be passed into the test!
-	- Done
 - `jest timer`
 	- This is the most tricky one.
 		- OR maybe not.
 		- Global hook
 		- Remember real hook inside our app to track time.
 			- Victory 
- 
+  - https://github.com/facebook/jest/blob/5da3402c70029f79ff42d295ce0b5b3f3ed54496/packages/jest-fake-timers/src/legacyFakeTimers.ts
+ - `inline snapshot` ???
+    - https://github.com/facebook/jest/blob/main/packages/jest-snapshot/src/InlineSnapshots.ts
