@@ -4,7 +4,7 @@ Testing framework for people using containers.
 
 
 # Features missing
-- `describe` inside `describe`
+- ok - `describe` inside `describe`
 	- Global
 		- Local
 		- Local
@@ -13,12 +13,12 @@ Testing framework for people using containers.
 	- clear -> Restets it.
 	- Done
 
-- `expect` rejects
-	- I think this is just because of people using the api in a bad way.
-- `it.each`
+- ok - `expect` rejects
+- ok - `it.each`
 	- iterate over the array and format the test based on input variables.
 	- varaibles also ahve to be passed into the test!
 	- Done
+- jest snapshots
 - `jest timer`
 	- This is the most tricky one.
 		- OR maybe not.
