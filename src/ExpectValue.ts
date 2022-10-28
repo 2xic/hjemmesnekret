@@ -1,164 +1,186 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from "bignumber.js";
+import { AbstractExpect } from "./Expect";
+//import { ExpectValueAsync } from './ExpectValueAsync';
+import { FailedTestError } from "./FailedTestError";
 
-export class Expect {
-  private isFalsy = false;
-
-  constructor(private value: unknown) {}
+/*
+- TODO: clean this up
+    - it could probably be moved over to Expect and have it just resolve.
+    - or move all the checking logic to be in an other class.
+*/
+export class Expect extends AbstractExpect<
+  void | Promise<void> | AbstractExpect<any>
+> {
+  constructor(protected value: unknown) {
+    super(value);
+  }
 
   public toBeTruthy() {
-    this.throwIfFalsy(!!this.value);
+    this.throwIfFalsy(!!this.value, true);
   }
 
   public toHaveLength(length: number) {
     if (Array.isArray(this.value)) {
-      this.throwIfFalsy(this.value.length === length)
+      this.throwIfFalsy(this.value.length === length, length);
     } else {
-      this.throwIfFalsy(false);
+      this.throwIfFalsy(false, -1);
     }
   }
 
-  public async toMatchObject(value: unknown) {
-    return this;
+  public toBeInstanceOf(truth: new () => unknown) {
+    // this.value = await Promise.resolve(this.value);
+    this.throwIfFalsy(this.value instanceof truth, truth);
   }
 
-  public async toBeInstanceOf(truth: new () => unknown) {
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy(this.value instanceof truth)
+  public toBe(value: unknown) {
+    // this.value = await Promise.resolve(this.value);
+    this.throwIfFalsy(this.value === value, value);
   }
 
-  public async toBe(value: unknown){
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy(this.value === value);
-  }
-
-  public async toStrictEqual(value: unknown) {
-    this.value = await Promise.resolve(this.value);
+  public toStrictEqual(value: unknown) {
+    // this.value = await Promise.resolve(this.value);
     // https://jestjs.io/docs/expect#tostrictequalvalue
     // TODO
-    return this;
+    throw new Error("todo");
   }
 
-  public async toMatchInlineSnapshot(value: unknown){
-    this.value = await Promise.resolve(this.value);
+  public toMatchInlineSnapshot(value: unknown) {
+    // this.value = await Promise.resolve(this.value);
     // https://jestjs.io/docs/expect#tomatchinlinesnapshotpropertymatchers-inlinesnapshot
     // TODO
-    return this;
+    throw new Error("todo");
   }
 
-  public async toBeDefined() {
-    this.value = await Promise.resolve(this.value);
+  public toBeDefined() {
+    // this.value = await Promise.resolve(this.value);
     // https://jestjs.io/docs/expect#tobedefined
-    this.throwIfFalsy(this.value !== undefined);
+    this.throwIfFalsy(this.value !== undefined, undefined);
   }
 
-  public async toBeUndefined() {
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy(this.value === undefined);
+  public toBeUndefined() {
+    // this.value = await Promise.resolve(this.value);
+    this.throwIfFalsy(this.value === undefined, undefined);
   }
 
-  public async toBeLessThan(value: number) {
-    this.value = await Promise.resolve(this.value);
+  public toBeLessThan(value: number) {
+    // this.value = await Promise.resolve(this.value);
     // https://jestjs.io/docs/expect#tobedefined
-    this.throwIfFalsy((this.value as number) < value);
+    this.throwIfFalsy((this.value as number) < value, value);
   }
 
-  public async toBeLessThanOrEqual(value: number) {
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy((this.value as number) <= value);
+  public toBeLessThanOrEqual(value: number) {
+    // this.value = await Promise.resolve(this.value, value);
+    this.throwIfFalsy((this.value as number) <= value, value);
   }
 
-  public async toBeGreaterThanOrEqual(value: number) {
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy((this.value as number) >= value);
+  public toBeGreaterThanOrEqual(value: number) {
+    // this.value = await Promise.resolve(this.value, value);
+    this.throwIfFalsy((this.value as number) >= value, value);
   }
 
-  public async toBeGreaterThan(value: number) {
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy((this.value as number) > value);
+  public toBeGreaterThan(value: number) {
+    // this.value = await Promise.resolve(this.value, value);
+    this.throwIfFalsy((this.value as number) > value, value);
   }
 
-  public async toContain(value: string) {
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy(typeof this.value === 'string' && this.value.includes(value))
+  public toContain(value: string) {
+    // this.value = await Promise.resolve(this.value);
+    this.throwIfFalsy(
+      typeof this.value === "string" && this.value.includes(value),
+      value
+    );
   }
 
   public toContainEqual(value: Record<string, unknown>) {
     const listValue = Array.isArray(this.value) ? this.value : [this.value];
-    if (typeof listValue[0] === 'object') {
+    if (typeof listValue[0] === "object") {
       const results: boolean[] = [];
       for (const listItem of listValue) {
-        Object.entries(value).forEach(([key, value] : [string, unknown]) => {
-          results.push(typeof listItem === 'object' && value === (listItem as Record<string, unknown>)[key])
-        })
+        Object.entries(value).forEach(([key, value]: [string, unknown]) => {
+          results.push(
+            typeof listItem === "object" &&
+              value === (listItem as Record<string, unknown>)[key]
+          );
+        });
       }
-      this.throwIfFalsy(results.includes(true))
+      this.throwIfFalsy(results.includes(true), value);
     } else {
-      this.throwIfFalsy(this.isFalsy)
+      this.throwIfFalsy(this.isFalsy, {});
     }
   }
 
-  static objectContaining(value: unknown){
+  static objectContaining(value: unknown) {
     return value;
   }
 
-  public toEqual(value: unknown){
-    if (BigNumber.isBigNumber(value) && BigNumber.isBigNumber(this.value)){
-      this.throwIfFalsy(value.isEqualTo(this.value))
+  public toEqual(value: unknown) {
+    if (BigNumber.isBigNumber(value) && BigNumber.isBigNumber(this.value)) {
+      this.throwIfFalsy(value.isEqualTo(this.value), value);
     } else {
-      this.throwIfFalsy(this.value === value);
+      this.throwIfFalsy(this.value === value, value);
     }
   }
 
   public toBeFalsy() {
-    this.throwIfFalsy(!this.value);
+    this.throwIfFalsy(!this.value, true);
   }
 
-  public get not() {
-    this.isFalsy = !this.isFalsy;
-    return this;
+  public toThrowError() {
+    // this.value = await Promise.resolve(this.value);
+    this.throwIfFalsy(this.value instanceof Error, undefined);
   }
 
-  public async toThrowError(){
-    this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy(this.value instanceof Error);
-  }
-
-  public async toThrow(){
+  public toThrow() {
     return this.toThrowError();
   }
 
   public get rejects() {
-    if (typeof this.value === 'function') {
+    const { ExpectValueAsync } = require("./ExpectValueAsync");
+    if (typeof this.value === "function") {
       this.value = this.value().catch((err: unknown) => err);
-      return this;
-    } else if (this.value instanceof Promise){
+      return new ExpectValueAsync(this.value);
+    } else if (this.value instanceof Promise) {
       this.value = this.value.catch((err: unknown) => err);
-      return this;
+      return new ExpectValueAsync(this.value);
     } else {
-      throw new Error('not any vlaue function')
+      throw new Error("not any value function");
     }
   }
 
-  public toHaveEqualItems(expectItems: unknown[]){
+  public get resolves() {
+    const { ExpectValueAsync } = require("./ExpectValueAsync");
+    if (typeof this.value === "function") {
+      this.value = this.value().then((value: unknown) => value);
+      return new ExpectValueAsync(this.value);
+    } else if (this.value instanceof Promise) {
+      this.value = this.value.then((value: unknown) => value);
+      return new ExpectValueAsync(this.value);
+    } else {
+      throw new Error("not any value function");
+    }
+  }
+
+  public toHaveEqualItems(expectItems: unknown[]) {
     const toBeItems = this.value as unknown[];
     const hasSameLength = expectItems?.length === toBeItems?.length;
-    const hasSameItems = expectItems?.every((item, index ) => {
-      if (!toBeItems){
+    const hasSameItems = expectItems?.every((item, index) => {
+      if (!toBeItems) {
         return false;
       }
       return item === toBeItems[index];
-    })
+    });
 
     const pass = hasSameLength && hasSameItems;
-    this.throwIfFalsy(pass);
+    this.throwIfFalsy(pass, expectItems);
   }
 
-  public throwIfFalsy(value: boolean){
-    if (value === this.isFalsy){
-      console.log(`${value} is not same as ${this.value}`)
-      throw new Error('bad test')
+  public throwIfFalsy(value: boolean, contextValue: unknown) {
+    if (value === this.isFalsy) {
+      const hint = this.isFalsy ? `not` : ''
+   //   console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);
+      throw new FailedTestError();
     } else {
-    //  console.log(`${value} == ${this.value}`)
+      //  console.log(`${value} == ${this.value}`)
     }
   }
 }

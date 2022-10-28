@@ -1,3 +1,5 @@
+import { HappyLog, SadLog } from "./Logger";
+
 export class TestContainer {
   private tests: Array<[string, () => any | Promise<any>]> = [];
 
@@ -5,34 +7,61 @@ export class TestContainer {
 
   private beforeEach: () => void | Promise<void> = () => undefined;
 
-  private describes: Array<Callback> = [];
+  private describe: () => void | Promise<void> = () => undefined;
 
-  public setup(_name: string, describe: () => void | Promise<void>) {
-    this.describes.push(describe);
+  private describes: Array<[string, Callback]> = [];
+
+  public clear(){
+    this.describes = [];
+    this.tests = [];
+    return this;
+  }
+
+  public setup(name: string, describe: () => void | Promise<void>) {
+
+    this.describes.push([name, describe]);
 
     return this;
   }
 
+  private info:string[] = [];
+
   public async run(): Promise<string[]> {
+    this.info = [];
     return (async (): Promise<string[]> => {
-      const info: string[] = [];
-      for (const describe of this.describes) {
+      for (const [name, describe] of this.describes) {
+        this.info.push(`${name}`)
         await describe();
         await this.beforeAll();
-        for (const [name, test] of this.tests) {
-          //  console.log(test);
-          await this.beforeEach();
-          try {
-            await test();
-          } catch (err) {
-            console.log(`${name} failed`);
-            throw err;
+        await this.runTests({tests: this.tests});
+      }
+      if (this.describes.length === 0 && this.tests.length) {
+        await this.runTests({tests: this.tests});
+      }
+      return this.info;
+    })();
+  }
+
+  private async runTests( {tests} : {tests:  Array<[string, () => any | Promise<any>]>}) {
+    for (const [name, test] of tests) {
+        //  console.log(test);
+        await this.beforeEach();
+        try {
+          const err = await Promise.resolve(test()).catch(() => {
+        //    console.log('failed')
+            return true;
+          })
+          if (err) {
+            this.info.push(SadLog(`\tFAILED - ${name}`));
+          } else {
+            this.info.push(HappyLog(`\tOK - ${name}`));
           }
-          info.push(`OK - ${name}`);
+        } catch (err) {
+         // console.log(err);
+          this.info.push(SadLog(`\tFAILED - ${name}`));
+          continue;
         }
       }
-      return info;
-    })();
   }
 
 
@@ -46,6 +75,10 @@ export class TestContainer {
 
   public addTest(name: string, test: () => any | Promise<any>) {
     this.tests.push([name, test]);
+  }
+
+  public get testCount(){
+    return this.tests.length;
   }
 }
 

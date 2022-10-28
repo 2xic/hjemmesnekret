@@ -1,9 +1,27 @@
 import glob from 'glob';
 const { spawn } = require('node:child_process');
 import path from 'path';
-import { MakeQueryablePromise, PromiseQuery } from './MakeQueryablePromise';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+// from https://stackoverflow.com/questions/21485545/is-there-a-way-to-tell-if-an-es6-promise-is-fulfilled-rejected-resolved
+function MakeQueryablePromise(promise: any): PromiseQuery {
+    // Don't create a wrapper for promises that can already be queried.
+    if (promise.isResolved) return promise;
+    
+    var isResolved = false;
+    var isRejected = false;
+
+    // Observe the promise, saving the fulfillment in a closure scope.
+    var result = promise.then(
+       function(v: unknown) { isResolved = true; return v; }, 
+       function(e: unknown) { isRejected = true; /*throw e;*/ })
+      .catch(() => {isRejected = true})
+    result.isFulfilled = function() { return isResolved || isRejected; };
+    result.isResolved = function() { return isResolved; }
+    result.isRejected = function() { return isRejected; }
+    return result;
+}
 
 async function Worker(file: string) {
   return new Promise<string>((resolve, reject) => {
@@ -38,13 +56,13 @@ async function Worker(file: string) {
 (async () => {
   const workerCount = 2;
   const files = glob.sync('./**/*.unit.test.js', {absolute: true});
-  let queue: PromiseQuery<string>[] = [];
+  let queue: PromiseQuery[] = [];
   const start = Date.now();
   while (files.length){
     const size = Math.min(workerCount, files.length);
 
     while(queue.length < size) {
-      queue.push(MakeQueryablePromise<string>(Worker(files.pop() as string)))
+      queue.push(MakeQueryablePromise(Worker(files.pop() as string)))
     }
     // clear done items
     queue = queue.filter((item) => {
@@ -60,3 +78,7 @@ async function Worker(file: string) {
   const end = Date.now();
   console.log(`time usage ${end - start} ms`)
 })();
+
+interface PromiseQuery {
+  isFulfilled: () => boolean
+}
