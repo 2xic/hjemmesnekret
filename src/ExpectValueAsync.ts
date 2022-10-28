@@ -31,52 +31,53 @@ export class ExpectValueAsync extends Expect {
     super.toMatchInlineSnapshot(value);
   }
   public toBeDefined(): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toBeDefined."');
     throw new Error("Method not implemented.");
   }
   public toBeUndefined(): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toBeUndefined."');
     throw new Error("Method not implemented.");
   }
   public toBeLessThan(value: number): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toBeLessThan."');
     throw new Error("Method not implemented.");
   }
   public toBeLessThanOrEqual(value: number): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toBeLessThanOrEqual."');
     throw new Error("Method not implemented.");
   }
   public toBeGreaterThanOrEqual(value: number): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toBeGreaterThanOrEqual."');
     throw new Error("Method not implemented.");
   }
   public toBeGreaterThan(value: number): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toBeGreaterThan."');
     throw new Error("Method not implemented.");
   }
   public toContain(value: string): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toContain."');
     throw new Error("Method not implemented.");
   }
   public toContainEqual(value: Record<string, unknown>): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toContainEqual."');
     throw new Error("Method not implemented.");
   }
   public toEqual(value: unknown): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toEqual."');
     throw new Error("Method not implemented.");
   }
   public toBeFalsy(): Promise<void> {
-    console.log('async - "Method not implemented."');
+    console.log('async - "Method not implemented - toBeFalsy."');
     throw new Error("Method not implemented.");
   }
-  public toThrowError(): Promise<void> {
-    console.log('async - "Method not implemented."');
-    throw new Error("Method not implemented.");
+  public async toThrowError(): Promise<void> {
+    await this.resolvePromise();
+    super.toThrowError();
   }
-  public toThrow(): Promise<void> {
-    console.log('async - "Method not implemented."');
-    throw new Error("Method not implemented.");
+
+  public async toThrow(): Promise<void> {
+    await this.resolvePromise();
+    super.toThrowError();
   }
 
   private async resolvePromise() {

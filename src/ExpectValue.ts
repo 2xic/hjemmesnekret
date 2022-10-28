@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { deepEqual } from "./deepEqual";
 import { AbstractExpect } from "./Expect";
 //import { ExpectValueAsync } from './ExpectValueAsync';
 import { FailedTestError } from "./FailedTestError";
@@ -11,8 +12,17 @@ import { FailedTestError } from "./FailedTestError";
 export class Expect extends AbstractExpect<
   void | Promise<void> | AbstractExpect<any>
 > {
+
   constructor(protected value: unknown) {
     super(value);
+    const val = this.value;
+    if (typeof val === 'function') {
+      try {
+        this.value = val();
+      } catch (err) {
+        this.value = err;
+      }
+    }
   }
 
   public toBeTruthy() {
@@ -20,8 +30,9 @@ export class Expect extends AbstractExpect<
   }
 
   public toHaveLength(length: number) {
-    if (Array.isArray(this.value)) {
-      this.throwIfFalsy(this.value.length === length, length);
+    const arrayLikeType = this.value as {length?:number};
+    if (typeof arrayLikeType.length == 'number') {
+      this.throwIfFalsy(arrayLikeType.length === length, length);
     } else {
       this.throwIfFalsy(false, -1);
     }
@@ -121,13 +132,21 @@ export class Expect extends AbstractExpect<
     }
   }
 
+  public toMatchObject(arg: unknown): void | Promise<void> | AbstractExpect<any> | Promise<void | Promise<void> | AbstractExpect<any>> {
+    this.throwIfFalsy(deepEqual(this.value, arg), arg);
+  }
+
   public toBeFalsy() {
     this.throwIfFalsy(!this.value, true);
   }
 
-  public toThrowError() {
+  public toThrowError<T extends Error>(value?: new () => T) {
     // this.value = await Promise.resolve(this.value);
-    this.throwIfFalsy(this.value instanceof Error, undefined);
+    if (value){
+      this.throwIfFalsy(this.value instanceof value, undefined);
+    } else {
+      this.throwIfFalsy(this.value instanceof Error, undefined);
+    }
   }
 
   public toThrow() {
@@ -174,10 +193,10 @@ export class Expect extends AbstractExpect<
     this.throwIfFalsy(pass, expectItems);
   }
 
-  public throwIfFalsy(value: boolean, contextValue: unknown) {
+  public throwIfFalsy(value: boolean, contextValue: unknown) {    
     if (value === this.isFalsy) {
       const hint = this.isFalsy ? `not` : ''
-   //   console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);
+      console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);
       throw new FailedTestError();
     } else {
       //  console.log(`${value} == ${this.value}`)

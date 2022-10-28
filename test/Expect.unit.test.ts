@@ -5,6 +5,15 @@ describe('Expect', () => {
 		expect(2).toBe(4);
 	})
 
+	it('should correctly check length', () => {
+		expect([1, 2, 3]).toHaveLength(3);
+	})
+
+
+	it('should correctly match object', () => {
+		expect([1, 2, 3]).toMatchObject(3);
+	})
+
 	it('should correctly resolve async operations (success)', async () => {
 		const results = await new Promise((resolve) => {
 			setTimeout(() => resolve(42), 3000)
@@ -25,5 +34,15 @@ describe('Expect', () => {
 			setTimeout(() => resolve(42), 3000)
 		});
 		await expect(results).resolves.toBe(42);
+	})
+
+	it("should correctly report error", () => {
+		console.log(1);
+		expect(() => {
+			throw new Error('test')
+		}).toThrow();
+
+		console.log(2);
+
 	})
 })

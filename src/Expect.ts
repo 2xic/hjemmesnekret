@@ -3,6 +3,7 @@ export abstract class AbstractExpect<T> {
 
   constructor(protected value: unknown) {}
 
+  public abstract toMatchObject(arg: T): T | Promise<T>;
   public abstract toBeTruthy(): T | Promise<T>;
   public abstract toHaveLength(length: number): T | Promise<T>;
   public abstract toBeInstanceOf(truth: new () => unknown): T | Promise<T>;
