@@ -1,14 +1,16 @@
 ## Hjemmesnekret
 
-Testing framework for those in need for speed.
+(Simple) testing framework for those in need for speed. Will use same interface as `jest` to make it easy to switch to.
 
-# Features missing
+Here is the results for running all tests in [tinyeth](github.com/2xic/tinyeth).
+
+![results](plot-data/plot.png)
+
+
+# TODO
+Some features I still want to add.
+
 - `jest timer`
-	- This is the most tricky one.
-		- OR maybe not.
-		- Global hook
-		- Remember real hook inside our app to track time.
-			- Victory 
-  - https://github.com/facebook/jest/blob/5da3402c70029f79ff42d295ce0b5b3f3ed54496/packages/jest-fake-timers/src/legacyFakeTimers.ts
- - `inline snapshot` ???
-    - https://github.com/facebook/jest/blob/main/packages/jest-snapshot/src/InlineSnapshots.ts
+- `inline snapshot`
+- Add object differ
+- Add a real stacktrace with support for js.map
