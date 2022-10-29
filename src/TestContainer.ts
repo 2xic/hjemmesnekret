@@ -9,6 +9,8 @@ export class TestContainer {
 
   private describes: Array<Describe> = [];
 
+  private _failures: Array<Failure> = [];
+
   private testResults = {
     success: 0,
     skip: 0,
@@ -70,19 +72,27 @@ export class TestContainer {
       }
       await this.beforeEach();
       try {
-        const err = await Promise.resolve(test()).catch((err: unknown) => {
-          return err || true;
+        const err = await Promise.resolve(test()).catch((err: Object) => {
+          return err;
         });
         if (err) {
           this.info.push(SadLog(`\tFAILED - ${name}`));
           this.testResults.failed += 1;
+          this._failures.push({
+            context: [name],
+            message: err,
+          })
         } else {
           this.info.push(HappyLog(`\tOK - ${name}`));
           this.testResults.success += 1;
         }
-      } catch (err) {
+      } catch (err: any) {
         this.info.push(SadLog(`\tFAILED - ${name}`));
         this.testResults.failed += 1;
+        this._failures.push({
+          context: [name],
+          message: err,
+        })
         continue;
       }
     }
@@ -118,18 +128,27 @@ export class TestContainer {
   public get testCount() {
     return this.tests.length;
   }
+  
+  public get failures(): Readonly<Failure[]> {
+    return this._failures;
+  }
 }
 
 type Callback = () => void | Promise<void>;
 
 interface Test {
   name: string;
-  test: () => any | Promise<any>;
+  test: Callback;
   skip: boolean;
 }
 
 interface Describe {
   name: string;
-  describe: () => any | Promise<any>;
+  describe: Callback;
   skip: boolean;
+}
+
+export interface Failure {
+  context: string[],
+  message: Error | Object;
 }

@@ -6,18 +6,15 @@ export let testContainer = new TestContainer();
 
 export type CallbackFunction = () => void;
 
-const beforeEach = (callback: CallbackFunction) => {
- // console.log(this);
+export const beforeEach = (callback: CallbackFunction) => {
   testContainer.registerBeforeEach(callback);
 };
 
-const beforeAll = (callback: CallbackFunction) => {
-  //console.log(this);
+export const beforeAll = (callback: CallbackFunction) => {
   testContainer.registerBeforeAll(callback);
 };
 
 export const it = (name: string, callback: CallbackFunction) => {
-  // pass
   testContainer.addTest(name, callback);
 };
 
@@ -28,34 +25,24 @@ export const expect = (value: unknown) => {
 export const describe = (name: string, callback: CallbackFunction) => {
     return testContainer.setup(name, callback);
 }
-
-// @ts-ignore
-global.describe = describe;
-// @ts-ignore
-global.describe.skip = (name: string, callback: CallbackFunction) => {
+describe.skip = (name: string, callback: CallbackFunction) => {
   return testContainer.setup(name, callback, true);
 };
-// @ts-ignore
+global.describe = describe;
 global.beforeEach = beforeEach;
-// @ts-ignore
 global.beforeAll = beforeAll;
-// @ts-ignore
-global.it = it;
-// @ts-ignore
+
 it.skip = (name: string, callback: CallbackFunction) => {
   return testContainer.addTest(name, callback, true);
 };
-// @ts-ignore
-it.skip.each = () => {
+(it.skip as any).each = () => {
   return () => undefined;
 };
-// @ts-ignore
 it.each = (testOptions: unknown[] | unknown[][]) => {
   return MakeCallable(testOptions, testContainer);
-//  return () => undefined;
 };
 
-// @ts-ignore
+global.it = it;
+
+expect.objectContaining = Expect.objectContaining;
 global.expect = expect;
-// @ts-ignore
-global.expect.objectContaining = Expect.objectContaining;

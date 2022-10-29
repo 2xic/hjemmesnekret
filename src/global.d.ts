@@ -1,50 +1,25 @@
+import { Expect } from "./expect/ExpectValue";
+
 export type CallbackFunction = () => void;
-import {
-  expect as globalExpect,
-  describe as globalDescribe,
-  it as globalIt,
-  beforeEach as globalBeforeEach,
-} from "./globals";
+
+function itSkip(name: string, callback: CallbackFunction): void;
+function itEach(testOptions: unknown[] | unknown[][]): Function;
 
 declare global {
-  const expect = globalExpect;
-  const describe = globalDescribe;
-  const it = globalIt;
-  const beforeEach = globalBeforeEach;
+	function expect(value: unknown): Expect;
+	expect['objectContaining'] = (value: unknown) => unknown;
 
-  it.each = (testOptions: unknown[] | unknown[][]) => {
-    return MakeCallable(testOptions, testContainer);
-    //  return () => undefined;
-  };
+	function describe(name: string, callback: CallbackFunction): void;
+	describe['skip'] = itSkip;
 
-  /*
-	// @ts-ignore
-	global.describe = describe;
-	// @ts-ignore
-	global.describe.skip = () => undefined;
-	// @ts-ignore
-	global.beforeEach = beforeEach;
-	// @ts-ignore
-	global.beforeAll = beforeAll;
-	// @ts-ignore
-	global.it = it;
-	// @ts-ignore
-	global.it.skip = () => undefined;
-	// @ts-ignore
-	global.it.skip.each = () => {
-	  return () => undefined;
-	};
-	// @ts-ignore
-	// @ts-ignore
-	global.expect = expect;
-	// @ts-ignore
-	global.expect.objectContaining = Expect.objectContaining;
-	*/
+	function it(name: string, callback: CallbackFunction): void;
+	function it(name: string, callback: CallbackFunction): void;
+	it['skip'] = itSkip;
+	it['skip']['each'] = itEach;
+	it['each'] = itEach;
 
-  /*
-	type beforAll = (callback: CallbackFunction) => void;
-	type it = (name: string, callback: CallbackFunction)  => void;
-	type expect = (value: unknown) => void;
-	type describe = (name: string, callback: CallbackFunction) => void;
-	*/
+
+	function beforeEach(callback: CallbackFunction): void;
+	function beforeAll(callback: CallbackFunction): void;
 }
+

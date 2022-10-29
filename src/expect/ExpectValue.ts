@@ -126,6 +126,8 @@ export class Expect extends AbstractExpect<
   public toEqual(value: unknown) {
     if (BigNumber.isBigNumber(value) && BigNumber.isBigNumber(this.value)) {
       this.throwIfFalsy(value.isEqualTo(this.value), value);
+    } else if (value instanceof Error && this.value instanceof Error) {
+      this.throwIfFalsy(value.name === this.value.name && value.message === this.value.message, value);
     } else {
       this.throwIfFalsy(this.value === value, value);
     }
@@ -196,7 +198,7 @@ export class Expect extends AbstractExpect<
     if (value === this.isFalsy) {
       const hint = this.isFalsy ? `not` : ''
       // console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);
-      throw new FailedTestError();
+      throw new FailedTestError(`Expected ${contextValue} ${hint} to be ${this.value}`);
     } else {
       // console.log(`${value} == ${this.value}`)
     }

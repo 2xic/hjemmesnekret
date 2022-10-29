@@ -1,8 +1,8 @@
 
 
 export class FailedTestError extends Error {
-	constructor(){
-		super('Test failed');
+	constructor(public message: string){
+		super(message);
 	    this.name = 'FailedTestError';
 	}
 }

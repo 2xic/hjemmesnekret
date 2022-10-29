@@ -6,6 +6,8 @@ let { testContainer } = require('./globals')
 
 import dayjs from 'dayjs';
 import { HappyLog, SadLog, YellowColorLog } from './utils/Logger';
+import { Failure } from './TestContainer';
+import { SimpleStackTracer } from './utils/StackTracer';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 
@@ -24,6 +26,7 @@ async function runTest(testFile: string) {
   const successCount = testContainer.success;
   const failedCount = testContainer.failed;
   const skipCount = testContainer.skip;
+  const failures: [string, Failure[]] = [testFile, testContainer.failures];
 
   results.push(`Executed ${testContainer.testCount} tests in ${(end - start) / 1000} s`)
   results.push(HappyLog(`${successCount} tests succeeded`))
@@ -36,7 +39,8 @@ async function runTest(testFile: string) {
     results, testCount,
     successCount,
     failedCount,
-    skipCount
+    skipCount,
+    failures
   };
 }
 
@@ -47,16 +51,27 @@ async function runTests(testFiles: string[]) {
   let totalSucceededCount = 0;
   let totalFailedCount = 0;
   let totalSkipCount = 0;
+  const allFailures: Array<[string, Failure[]]> = [];
   for (const file of testFiles) {
-    const { results, testCount, successCount, failedCount, skipCount } = await runTest(file)
+    const { results, testCount, successCount, failedCount, skipCount, failures } = await runTest(file)
     totalTestCount += testCount;
     totalSucceededCount += successCount;
     totalFailedCount += failedCount;
     totalSkipCount += skipCount;
     info.push(...(results));
+    allFailures.push(failures);
   }
 
   console.log(info.join('\n'))
+
+  for (const [name, errors] of allFailures) {
+    console.log(name);
+    errors.forEach(({context, message}) => {
+      console.log(`\t${context.join('->')}`)
+      console.log(`\t${new SimpleStackTracer(message).getMeaningFullStackTrace()}`)
+      console.log();
+    })
+  }
 
   if (1 < testFiles.length) {
     const end = Date.now();
