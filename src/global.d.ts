@@ -3,12 +3,14 @@ import {
   expect as globalExpect,
   describe as globalDescribe,
   it as globalIt,
+  beforeEach as globalBeforeEach,
 } from "./globals";
 
 declare global {
   const expect = globalExpect;
   const describe = globalDescribe;
   const it = globalIt;
+  const beforeEach = globalBeforeEach;
 
   it.each = (testOptions: unknown[] | unknown[][]) => {
     return MakeCallable(testOptions, testContainer);

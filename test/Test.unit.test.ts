@@ -11,3 +11,36 @@ describe("Test", () => {
     console.log(":)");
   });
 });
+
+describe("Test", () => {
+  [1, 2].map((item) => {
+    it.skip("should correctly have test inside map", async () => {
+      expect(item).not.toBe(4);
+    });
+    
+    let i = 0
+    
+    beforeEach(() => {
+      i = item;
+    });
+
+    it('should have normal map inside map', () => {
+      expect(typeof i).toBe('number')
+    })
+  });
+});
+
+describe('test', () => {
+  let executed = 0;
+  describe('single test', () => {
+    it('should run this once', () => {
+      expect(++executed).toBe(1);
+    })
+  });
+
+  describe('test two', () => {
+    it('should run this once', () => {
+      expect(++executed).toBe(2);
+    })
+  })
+});

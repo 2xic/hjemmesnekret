@@ -196,10 +196,10 @@ export class Expect extends AbstractExpect<
   public throwIfFalsy(value: boolean, contextValue: unknown) {    
     if (value === this.isFalsy) {
       const hint = this.isFalsy ? `not` : ''
-      console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);
+      // console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);
       throw new FailedTestError();
     } else {
-      //  console.log(`${value} == ${this.value}`)
+      // console.log(`${value} == ${this.value}`)
     }
   }
 }

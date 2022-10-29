@@ -32,7 +32,9 @@ export const describe = (name: string, callback: CallbackFunction) => {
 // @ts-ignore
 global.describe = describe;
 // @ts-ignore
-global.describe.skip = () => undefined;
+global.describe.skip = (name: string, callback: CallbackFunction) => {
+  return testContainer.setup(name, callback, true);
+};
 // @ts-ignore
 global.beforeEach = beforeEach;
 // @ts-ignore
@@ -40,7 +42,9 @@ global.beforeAll = beforeAll;
 // @ts-ignore
 global.it = it;
 // @ts-ignore
-it.skip = (...args: unknown[]) => undefined;
+it.skip = (name: string, callback: CallbackFunction) => {
+  return testContainer.addTest(name, callback, true);
+};
 // @ts-ignore
 it.skip.each = () => {
   return () => undefined;

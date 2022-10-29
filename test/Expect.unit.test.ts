@@ -37,12 +37,8 @@ describe('Expect', () => {
 	})
 
 	it("should correctly report error", () => {
-		console.log(1);
 		expect(() => {
 			throw new Error('test')
 		}).toThrow();
-
-		console.log(2);
-
 	})
 })
