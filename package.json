@@ -1,14 +1,17 @@
 {
   "name": "hjemmesnekret",
-  "version": "0.1.0",
+  "version": "0.2.3",
   "description": "",
-  "main": "./dist/TestContainerRunner.js",
+  "main": "./dist/Runner.js",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "hjemmesnekret-run": "bin/index.js"
+  },
   "author": "",
-  "license": "ISC",
+  "license": "???",
   "dependencies": {
     "bignumber.js": "^9.1.0",
     "dayjs": "^1.11.6",
