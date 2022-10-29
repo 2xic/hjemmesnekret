@@ -4,3 +4,4 @@ plot-data
 src
 selftest.sh
 tsconfig.json
+dist/tsconfig.tsbuildinfo

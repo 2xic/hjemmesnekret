@@ -1,6 +1,6 @@
 {
   "name": "hjemmesnekret",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "",
   "main": "./dist/Runner.js",
   "scripts": {
@@ -10,7 +10,8 @@
   "bin": {
     "hjemmesnekret-run": "bin/index.js"
   },
-  "author": "",
+  "homepage":"https://github.com/2xic/hjemmesnekret",
+  "author": "github.com/2xic",
   "license": "???",
   "dependencies": {
     "bignumber.js": "^9.1.0",
