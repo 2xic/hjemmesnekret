@@ -1,7 +1,6 @@
 import BigNumber from "bignumber.js";
 import { deepEqual } from "./deepEqual";
 import { AbstractExpect } from "./Expect";
-//import { ExpectValueAsync } from './ExpectValueAsync';
 import { FailedTestError } from "./FailedTestError";
 
 /*

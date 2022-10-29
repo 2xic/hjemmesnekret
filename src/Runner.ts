@@ -5,7 +5,7 @@ import fs from 'fs';
 let { testContainer } = require('./globals')
 
 import dayjs from 'dayjs';
-import { HappyLog, SadLog, YellowColorLog } from './Logger';
+import { HappyLog, SadLog, YellowColorLog } from './utils/Logger';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 

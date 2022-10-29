@@ -1,4 +1,4 @@
-import { HappyLog, SadLog, YellowColorLog } from "./Logger";
+import { HappyLog, SadLog, YellowColorLog } from "./utils/Logger";
 
 export class TestContainer {
   private tests: Array<Test> = [];
@@ -14,7 +14,6 @@ export class TestContainer {
     skip: 0,
     failed: 0,
   }
-
 
   public clear() {
     this.describes = [];
@@ -43,7 +42,7 @@ export class TestContainer {
     this.info = [];
     return (async (): Promise<string[]> => {
       let prevTestCountLocation = 0;
-      for (const {name, describe, skip} of this.describes) {
+      for (const { name, describe, skip } of this.describes) {
         this.info.push(`${name}`)
         if (skip) {
           await describe();
@@ -51,7 +50,7 @@ export class TestContainer {
         } else {
           await describe();
           await this.beforeAll();
-          await this.runTests({ tests: this.tests.slice(prevTestCountLocation) });            
+          await this.runTests({ tests: this.tests.slice(prevTestCountLocation) });
         }
         prevTestCountLocation = this.tests.length;
       }

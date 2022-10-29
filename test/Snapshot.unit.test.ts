@@ -1,4 +1,4 @@
-import { Snapshot } from "../src/Snapshot";
+import { Snapshot } from "../src/utils/Snapshot";
 
 describe('snapshots', () => {
     it.skip('should run snapshot correctly', () => {

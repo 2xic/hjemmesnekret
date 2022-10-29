@@ -1,4 +1,4 @@
-import { TestContainer } from "./TestContainer"
+import { TestContainer } from "../TestContainer"
 import util from 'node:util';
 
 export function MakeCallable(entryItems: unknown[] | unknown[][], container: TestContainer) {

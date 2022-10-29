@@ -1,6 +1,6 @@
 import {TestContainer} from './TestContainer';
-import {Expect} from './ExpectValue';
-import { MakeCallable } from './EachEntry';
+import {Expect} from './expect/ExpectValue';
+import { MakeCallable } from './expect/EachEntry';
 
 export let testContainer = new TestContainer();
 
