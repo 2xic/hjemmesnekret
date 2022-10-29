@@ -1,5 +1,5 @@
 import {TestContainer} from './TestContainer';
-import {Expect} from './expect/ExpectValue';
+import {ExpectValue} from './expect/ExpectValue';
 import { MakeCallable } from './expect/EachEntry';
 
 export let testContainer = new TestContainer();
@@ -19,7 +19,7 @@ export const it = (name: string, callback: CallbackFunction) => {
 };
 
 export const expect = (value: unknown) => {
-  return new Expect(value);
+  return new ExpectValue(value);
 };
 
 export const describe = (name: string, callback: CallbackFunction) => {
@@ -44,5 +44,5 @@ it.each = (testOptions: unknown[] | unknown[][]) => {
 
 global.it = it;
 
-expect.objectContaining = Expect.objectContaining;
+expect.objectContaining = ExpectValue.objectContaining;
 global.expect = expect;

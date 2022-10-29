@@ -1,4 +1,3 @@
-// import '../src/';
 
 describe('Expect', () => {
 	it('should correctly report a failure (fail)', () => {

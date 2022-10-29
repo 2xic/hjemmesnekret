@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import BigNumber from "bignumber.js";
 import { deepEqual } from "./deepEqual";
 import { AbstractExpect } from "./Expect";
@@ -8,7 +11,7 @@ import { FailedTestError } from "./FailedTestError";
     - it could probably be moved over to Expect and have it just resolve.
     - or move all the checking logic to be in an other class.
 */
-export class Expect extends AbstractExpect<
+export class ExpectValue extends AbstractExpect<
   void | Promise<void> | AbstractExpect<any>
 > {
 
@@ -194,7 +197,7 @@ export class Expect extends AbstractExpect<
     this.throwIfFalsy(pass, expectItems);
   }
 
-  public throwIfFalsy(value: boolean, contextValue: unknown) {    
+  protected throwIfFalsy(value: boolean, contextValue: unknown) {    
     if (value === this.isFalsy) {
       const hint = this.isFalsy ? `not` : ''
       // console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);

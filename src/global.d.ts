@@ -1,12 +1,14 @@
-import { Expect } from "./expect/ExpectValue";
+import { ExpectValue } from "./expect/ExpectValue";
 
 export type CallbackFunction = () => void;
 
 function itSkip(name: string, callback: CallbackFunction): void;
+// eslint-disable-next-line @typescript-eslint/ban-types
 function itEach(testOptions: unknown[] | unknown[][]): Function;
 
 declare global {
-	function expect(value: unknown): Expect;
+	function expect(value: unknown): ExpectValue;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	expect['objectContaining'] = (value: unknown) => unknown;
 
 	function describe(name: string, callback: CallbackFunction): void;

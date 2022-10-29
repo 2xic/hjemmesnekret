@@ -1,16 +1,17 @@
 {
   "name": "hjemmesnekret",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "",
   "main": "./dist/Runner.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./src/**/*.ts"
   },
   "bin": {
     "hjemmesnekret-run": "bin/index.js"
   },
-  "homepage":"https://github.com/2xic/hjemmesnekret",
+  "homepage": "https://github.com/2xic/hjemmesnekret",
   "author": "github.com/2xic",
   "license": "???",
   "dependencies": {
@@ -21,6 +22,9 @@
     "typescript": "^4.8.4"
   },
   "devDependencies": {
-    "@types/glob": "^8.0.0"
+    "@types/glob": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint": "^8.26.0"
   }
 }

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Expect } from "./ExpectValue";
+import { ExpectValue } from "./ExpectValue";
 
-export class ExpectValueAsync extends Expect {
+export class ExpectValueAsync extends ExpectValue {
   constructor(protected value: unknown) {
     super(value);
   }

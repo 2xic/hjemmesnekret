@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { HappyLog, SadLog, YellowColorLog } from "./utils/Logger";
 
 export class TestContainer {
@@ -107,6 +108,7 @@ export class TestContainer {
     this.beforeEach = callback;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public addTest(name: string, test: () => any | Promise<any>, skip = false) {
     this.tests.push({
       name, test, skip

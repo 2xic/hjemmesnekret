@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 
 export function deepEqual(a: unknown, b: unknown): boolean {
     if (a && typeof a === 'object' && b && typeof b === 'object') {

@@ -1,7 +1,8 @@
 benchmark
 test
-plot-data
+plot-data/*
 src
 selftest.sh
 tsconfig.json
 dist/tsconfig.tsbuildinfo
+!plot-data/plot.png

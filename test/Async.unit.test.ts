@@ -1,5 +1,5 @@
-describe("async", () => {
 
+describe("async", () => {
   it("should fail async correctly", async () => {
     await expect(new Promise<void>((_, reject) => {
         setTimeout(() => reject(42), 100);
