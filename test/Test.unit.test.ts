@@ -17,9 +17,9 @@ describe("Test", () => {
     it.skip("should correctly have test inside map", async () => {
       expect(item).not.toBe(4);
     });
-    
+
     let i = 0
-    
+
     beforeEach(() => {
       i = item;
     });
@@ -44,3 +44,18 @@ describe('test', () => {
     })
   })
 });
+
+
+describe.skip('should skip correctly', () => {
+  beforeEach(() => {
+    throw new Error('this should not be executed')
+  })
+
+  beforeAll(() => {
+    throw new Error('this should not be executed')
+  })
+
+  afterAll(() => {
+    throw new Error('this should not be executed')
+  })
+})

@@ -2,8 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import BigNumber from "bignumber.js";
-import { deepEqual } from "./deepEqual";
-import { AbstractExpect } from "./Expect";
+import { Snapshot } from "../utils/Snapshot";
+import { strictEqual } from "../utils/strictEqual";
+import { deepEqual } from "../utils/deepEqual";
+import { AbstractExpect } from "./AbstractExpect";
 import { FailedTestError } from "./FailedTestError";
 
 /*
@@ -41,63 +43,46 @@ export class ExpectValue extends AbstractExpect<
   }
 
   public toBeInstanceOf(truth: new () => unknown) {
-    // this.value = await Promise.resolve(this.value);
     this.throwIfFalsy(this.value instanceof truth, truth);
   }
 
   public toBe(value: unknown) {
-    // this.value = await Promise.resolve(this.value);
     this.throwIfFalsy(this.value === value, value);
   }
 
   public toStrictEqual(value: unknown) {
-    // this.value = await Promise.resolve(this.value);
-    // https://jestjs.io/docs/expect#tostrictequalvalue
-    // TODO
-    throw new Error("todo");
+    this.throwIfFalsy(strictEqual(this.value, value), value);
   }
 
   public toMatchInlineSnapshot(value: unknown) {
-    // this.value = await Promise.resolve(this.value);
-    // https://jestjs.io/docs/expect#tomatchinlinesnapshotpropertymatchers-inlinesnapshot
-    // TODO
-    throw new Error("todo");
+    this.value = new Snapshot().construct(this.value);
   }
 
   public toBeDefined() {
-    // this.value = await Promise.resolve(this.value);
-    // https://jestjs.io/docs/expect#tobedefined
     this.throwIfFalsy(this.value !== undefined, undefined);
   }
 
   public toBeUndefined() {
-    // this.value = await Promise.resolve(this.value);
     this.throwIfFalsy(this.value === undefined, undefined);
   }
 
   public toBeLessThan(value: number) {
-    // this.value = await Promise.resolve(this.value);
-    // https://jestjs.io/docs/expect#tobedefined
     this.throwIfFalsy((this.value as number) < value, value);
   }
 
   public toBeLessThanOrEqual(value: number) {
-    // this.value = await Promise.resolve(this.value, value);
     this.throwIfFalsy((this.value as number) <= value, value);
   }
 
   public toBeGreaterThanOrEqual(value: number) {
-    // this.value = await Promise.resolve(this.value, value);
     this.throwIfFalsy((this.value as number) >= value, value);
   }
 
   public toBeGreaterThan(value: number) {
-    // this.value = await Promise.resolve(this.value, value);
     this.throwIfFalsy((this.value as number) > value, value);
   }
 
   public toContain(value: string) {
-    // this.value = await Promise.resolve(this.value);
     this.throwIfFalsy(
       typeof this.value === "string" && this.value.includes(value),
       value
@@ -145,7 +130,6 @@ export class ExpectValue extends AbstractExpect<
   }
 
   public toThrowError<T extends Error>(value?: new () => T) {
-    // this.value = await Promise.resolve(this.value);
     if (value){
       this.throwIfFalsy(this.value instanceof value, undefined);
     } else {
@@ -197,13 +181,10 @@ export class ExpectValue extends AbstractExpect<
     this.throwIfFalsy(pass, expectItems);
   }
 
-  protected throwIfFalsy(value: boolean, contextValue: unknown) {    
+  protected throwIfFalsy(value: boolean, contextValue: unknown) {
     if (value === this.isFalsy) {
-      const hint = this.isFalsy ? `not` : ''
-      // console.log(`Expected ${contextValue} ${hint} to be same as ${this.value}`);
-      throw new FailedTestError(`Expected ${contextValue} ${hint} to be ${this.value}`);
-    } else {
-      // console.log(`${value} == ${this.value}`)
+      const hint = this.isFalsy ? ` not` : ''
+      throw new FailedTestError(`Expected ${contextValue}${hint} to be ${this.value}`);
     }
   }
 }

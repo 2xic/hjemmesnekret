@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { CallbackFunction } from "./global";
 import { HappyLog, SadLog, YellowColorLog } from "./utils/Logger";
 
 export class TestContainer {
   private tests: Array<Test> = [];
+
+  private afterAll: () => void | Promise<void> = () => undefined;
 
   private beforeAll: () => void | Promise<void> = () => undefined;
 
@@ -26,6 +29,7 @@ export class TestContainer {
       skip: 0,
       failed: 0,
     }
+    this._failures = [];
     return this;
   }
 
@@ -54,6 +58,7 @@ export class TestContainer {
           await describe();
           await this.beforeAll();
           await this.runTests({ tests: this.tests.slice(prevTestCountLocation) });
+          await this.afterAll();
         }
         prevTestCountLocation = this.tests.length;
       }
@@ -99,13 +104,25 @@ export class TestContainer {
     }
   }
 
-
+  /*
+    TODO: this should be inside a describe,
+  */
   public registerBeforeAll(callback: () => void) {
     this.beforeAll = callback;
   }
 
-  public registerBeforeEach(callback: () => void) {
+  /*
+    TODO: this should be inside a describe
+  */
+    public registerBeforeEach(callback: () => void) {
     this.beforeEach = callback;
+  }
+
+  /*
+    TODO: this should be inside a describe
+  */
+    public registerAfterAll(callback: CallbackFunction) {
+    this.afterAll = callback;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -130,7 +147,7 @@ export class TestContainer {
   public get testCount() {
     return this.tests.length;
   }
-  
+
   public get failures(): Readonly<Failure[]> {
     return this._failures;
   }

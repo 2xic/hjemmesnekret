@@ -1,4 +1,4 @@
-import { deepEqual } from "../src/expect/deepEqual";
+import { deepEqual } from "../src/utils/deepEqual";
 
 describe('deep equal', () => {
 

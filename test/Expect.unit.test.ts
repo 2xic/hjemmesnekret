@@ -9,8 +9,12 @@ describe('Expect', () => {
 	})
 
 
-	it('should correctly match object', () => {
+	it('should correctly match object (should fail)', () => {
 		expect([1, 2, 3]).toMatchObject(3);
+	})
+
+	it('should correctly match toStrictEqual (should fail)', () => {
+		expect({a: undefined, b:2}).not.toStrictEqual({b:2});
 	})
 
 	it('should correctly resolve async operations (success)', async () => {

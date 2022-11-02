@@ -1,48 +1,29 @@
 import {TestContainer} from './TestContainer';
-import {ExpectValue} from './expect/ExpectValue';
-import { MakeCallable } from './expect/EachEntry';
+import { MockFunctions } from './utils/MockFunction';
+import { spyOn } from './utils/spyOn';
+import { useFakeTimers, useRealTime } from './utils/useMockTime';
+import { CallbackFunction } from './callbackFunction';
+import { getIt } from './scopes/it';
+import { getBeforeAndAfter } from './scopes/beforeAndAfter';
+import { getExpect } from './scopes/expect';
+import { getDescribe } from './scopes/describe';
 
-export let testContainer = new TestContainer();
+export const testContainer = new TestContainer();
 
-export type CallbackFunction = () => void;
+const {beforeAll, beforeEach, afterAll} = getBeforeAndAfter(testContainer);
 
-export const beforeEach = (callback: CallbackFunction) => {
-  testContainer.registerBeforeEach(callback);
-};
-
-export const beforeAll = (callback: CallbackFunction) => {
-  testContainer.registerBeforeAll(callback);
-};
-
-export const it = (name: string, callback: CallbackFunction) => {
-  testContainer.addTest(name, callback);
-};
-
-export const expect = (value: unknown) => {
-  return new ExpectValue(value);
-};
-
-export const describe = (name: string, callback: CallbackFunction) => {
-    return testContainer.setup(name, callback);
-}
-describe.skip = (name: string, callback: CallbackFunction) => {
-  return testContainer.setup(name, callback, true);
-};
-global.describe = describe;
+global.expect = getExpect();
+global.describe = getDescribe(testContainer);
 global.beforeEach = beforeEach;
 global.beforeAll = beforeAll;
-
-it.skip = (name: string, callback: CallbackFunction) => {
-  return testContainer.addTest(name, callback, true);
+global.afterAll = afterAll;
+global.it = getIt(testContainer);
+global.test = (name: string, callback: CallbackFunction) => {
+  testContainer.addTest(name, callback);
+}
+global.jest = {
+  fn: () => new MockFunctions(),
+  useRealTimers: useRealTime,
+  useFakeTimers: useFakeTimers,
+  spyOn: spyOn,
 };
-(it.skip as any).each = () => {
-  return () => undefined;
-};
-it.each = (testOptions: unknown[] | unknown[][]) => {
-  return MakeCallable(testOptions, testContainer);
-};
-
-global.it = it;
-
-expect.objectContaining = ExpectValue.objectContaining;
-global.expect = expect;
